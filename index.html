@@ -1,0 +1,505 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>본문-해석본 암기 훈련</title>
+<style>
+  :root{
+    /* Light & friendly palette */
+    --bg:#f7f9fc;
+    --ink:#0f172a;
+    --muted:#64748b;
+    --panel:#ffffff;
+    --line:#e6e9f2;
+    --accent:#5b8def;     /* indigo-ish */
+    --accent-ink:#ffffff;
+    --ok:#16a34a;
+    --bad:#ef4444;
+    --info:#2563eb;
+    --ok-tint:#e8f7ee;
+    --bad-tint:#fdecec;
+    --info-tint:#eef4ff;
+  }
+  html,body{height:100%}
+  body{
+    margin:0;
+    background:
+      radial-gradient(1000px 500px at 10% -10%, #eaf0ff 0%, transparent 60%),
+      radial-gradient(800px 400px at 100% 0%, #f4f7ff 0%, transparent 60%),
+      var(--bg);
+    color:var(--ink);
+    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica,
+                 Apple SD Gothic Neo, Malgun Gothic, Noto Sans KR, sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:980px;margin:0 auto;padding:28px}
+  header{
+    display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;
+  }
+  .brand{
+    display:flex;align-items:center;gap:12px;
+  }
+  .logo{
+    width:36px;height:36px;border-radius:10px;
+    background: linear-gradient(145deg, #6ea3ff, #5b8def);
+    box-shadow: 0 6px 20px rgba(91,141,239,.3);
+  }
+  h1{font-size:22px;line-height:1.2;margin:0}
+  .sub{color:var(--muted);font-size:14px}
+
+  .card{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:18px;
+    padding:20px;
+    margin-bottom:16px;
+    box-shadow:
+      0 1px 2px rgba(16,24,40,0.06),
+      0 8px 24px rgba(16,24,40,0.06);
+  }
+
+  .row{display:flex;gap:16px;flex-wrap:wrap}
+  .col{flex:1 1 0;min-width:280px}
+
+  label{display:block;margin:0 0 8px;font-weight:600;color:#0b1220}
+  .muted{color:var(--muted);font-size:13px}
+
+  textarea{
+    width:100%;min-height:180px;
+    background:#fbfcff;border:1px solid var(--line);
+    color:var(--ink);
+    border-radius:14px;padding:12px 14px;line-height:1.6;
+    outline:none;
+    transition: box-shadow .2s, border-color .2s, background .2s;
+  }
+  textarea::placeholder{color:#98a4b3}
+  textarea:focus{
+    border-color:#bfd1ff;
+    box-shadow:0 0 0 4px #e6eeff;
+    background:#ffffff;
+  }
+
+  .btn{
+    appearance:none;border:1px solid var(--line);background:#ffffff;color:var(--ink);
+    padding:10px 14px;border-radius:12px;cursor:pointer;font-weight:600;
+    transition: transform .04s ease, box-shadow .2s, background .2s, border-color .2s;
+    box-shadow:0 1px 2px rgba(16,24,40,0.04);
+  }
+  .btn:hover{background:#f7f9ff;border-color:#ccd6f6}
+  .btn:active{transform:translateY(1px)}
+  .btn.primary{
+    background:var(--accent);color:var(--accent-ink);border-color:transparent;
+    box-shadow: 0 6px 16px rgba(91,141,239,.35);
+  }
+  .btn.primary:hover{filter:brightness(1.02)}
+  .btn.ghost{background:transparent}
+
+  .btn-group{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+
+  .info{
+    background:var(--info-tint);
+    border:1px solid #dbe6ff;
+    color:#123d9b;
+    border-radius:12px;
+    padding:12px 14px;
+  }
+
+  .choice{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:6px}
+  .pill{
+    border:1px solid var(--line);padding:10px 14px;border-radius:999px;cursor:pointer;background:#ffffff;
+    box-shadow:0 1px 2px rgba(16,24,40,0.04);
+  }
+  .pill:hover{border-color:#cdd5e6;background:#f7faff}
+
+  .hr{height:1px;background:var(--line);margin:14px 0}
+
+  .split{display:grid;grid-template-columns:1fr;gap:12px}
+  @media (min-width:860px){ .split{grid-template-columns:1fr 1fr;} }
+
+  .pane{
+    background:#fbfcff;border:1px solid var(--line);border-radius:14px;min-height:260px;padding:12px;position:relative;
+  }
+  .ref-line{
+    display:flex;gap:8px;align-items:flex-start;white-space:pre-wrap;border-bottom:1px dashed #edf0f6;padding:10px 6px;
+  }
+  .ref-line:last-child{border-bottom:none}
+  .chip{
+    flex:0 0 auto;min-width:28px;text-align:center;font-size:12px;color:#5b6b86;background:#eef2ff;border:1px solid #dee7ff;border-radius:999px;padding:3px 6px;margin-top:2px;
+  }
+
+  .line-wrap{display:flex;gap:8px;align-items:flex-start;padding:6px 0}
+  .idx{
+    width:34px;text-align:center;color:#5b6b86;background:#eef2ff;border:1px solid #dee7ff;border-radius:10px;padding:6px 0;flex:0 0 34px
+  }
+  .answer-line{
+    width:100%;box-sizing:border-box;padding:10px 12px;border-radius:12px;border:1px solid var(--line);
+    background:#ffffff;color:var(--ink);outline:none;transition:border-color .2s, box-shadow .2s, background .2s;
+  }
+  .answer-line::placeholder{color:#9aa7b7}
+  .answer-line:focus{border-color:#bfd1ff;box-shadow:0 0 0 4px #e6eeff}
+  .sticky-bottom{position:sticky;bottom:0;display:flex;justify-content:flex-end;padding-top:8px}
+
+  .summary{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .badge{
+    padding:6px 10px;border-radius:999px;font-size:13px;border:1px solid var(--line);background:#ffffff;
+    box-shadow:0 1px 2px rgba(16,24,40,0.04); color:#2b364a;
+  }
+  .badge.ok{background:var(--ok-tint);border-color:#bfe9cf;color:var(--ok)}
+  .badge.bad{background:var(--bad-tint);border-color:#ffd1d1;color:var(--bad)}
+
+  .alert{
+    background:#fff7ed;border:1px solid #ffddb1;color:#8a4d05;border-radius:12px;padding:10px 12px;margin-top:10px
+  }
+
+  .diff{background:rgba(239,68,68,.12);outline:1px solid rgba(239,68,68,.35);border-radius:6px;padding:0 2px}
+  .add{background:rgba(59,130,246,.12);outline:1px solid rgba(59,130,246,.35);border-radius:6px;padding:0 2px}
+  .miss{background:rgba(234,179,8,.14);outline:1px solid rgba(234,179,8,.35);border-radius:6px;padding:0 2px}
+
+  .controls{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:8px}
+  select, input[type="checkbox"]{accent-color:var(--accent)}
+  .kv{display:flex;gap:8px;align-items:center}
+  .tip{font-size:12px;color:var(--muted);margin-top:6px}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <div>
+          <h1>본문-해석본 암기 훈련</h1>
+          <div class="sub">두 텍스트를 문장 단위로 매칭하고, 원하는 쪽을 암기 연습합니다.</div>
+        </div>
+      </div>
+    </header>
+
+    <div class="card" id="step1">
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px;">
+        <div>
+          <strong>1단계 · 텍스트 입력</strong>
+          <div class="tip">문장 끝 <code>.</code> <code>?</code> <code>!</code> <code>…</code> <code>。？！</code> 기준으로 자동 분리돼요.</div>
+        </div>
+      </div>
+
+      <div class="row" style="margin-top:8px;">
+        <div class="col">
+          <label for="src">본문</label>
+          <textarea id="src" placeholder="예) It was the best of times. It was the worst of times."></textarea>
+        </div>
+        <div class="col">
+          <label for="tgt">본문 해석본</label>
+          <textarea id="tgt" placeholder="예) 그것은 최고의 시대였다. 그것은 최악의 시대였다."></textarea>
+        </div>
+      </div>
+
+      <div class="controls">
+        <div class="kv"><input id="keepPunct" type="checkbox" checked/><label for="keepPunct">문장부호 포함 비교</label></div>
+        <div class="kv"><input id="ignoreSpace" type="checkbox"/><label for="ignoreSpace">공백 무시</label></div>
+        <div class="kv"><input id="ignoreCase" type="checkbox"/><label for="ignoreCase">대소문자 무시</label></div>
+        <div class="kv">
+          <label for="unit" class="muted">비교 단위</label>
+          <select id="unit">
+            <option value="token">단어(공백 기준)</option>
+            <option value="char">문자(정밀)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="hr"></div>
+      <div class="btn-group">
+        <button class="btn" id="previewBtn" type="button">문장 분리 미리보기</button>
+        <button class="btn primary" id="toStep2" type="button">다음 단계</button>
+      </div>
+      <div id="preview" class="info" style="display:none;margin-top:12px"></div>
+    </div>
+
+    <div class="card" id="step2" style="display:none">
+      <strong>2단계 · 암기할 쪽 선택</strong>
+      <div class="choice">
+        <button class="pill" id="memorizeSrc" type="button">본문 암기</button>
+        <button class="pill" id="memorizeTgt" type="button">해석본 암기</button>
+      </div>
+      <div class="tip" style="text-align:center">선택하면 좌측에 참조가 보이고, 우측에 직접 입력합니다.</div>
+      <div class="btn-group" style="justify-content:center;margin-top:10px">
+        <button class="btn ghost" id="back1" type="button">← 입력으로 돌아가기</button>
+      </div>
+    </div>
+
+    <div class="card" id="step3" style="display:none">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;">
+        <strong id="quizTitle">3단계 · 암기 모드</strong>
+        <div class="summary" id="summary">
+          <span class="badge">총 문장 <b id="totalN">0</b></span>
+          <span class="badge ok">맞음 <b id="okN">0</b></span>
+          <span class="badge bad">틀림 <b id="badN">0</b></span>
+        </div>
+      </div>
+      <div class="hr"></div>
+
+      <div class="split">
+        <div class="pane">
+          <div class="muted" id="leftTitle" style="margin-bottom:6px"></div>
+          <div id="leftPanel"></div>
+        </div>
+        <div class="pane">
+          <div class="muted" id="rightTitle" style="margin-bottom:6px"></div>
+          <div id="rightPanel"></div>
+          <div class="sticky-bottom">
+            <button class="btn primary" id="checkBtn" type="button">완료</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="btn-group" style="margin-top:12px">
+        <button class="btn ghost" id="back2" type="button">← 모드 선택으로</button>
+        <button class="btn ghost" id="redo" type="button">처음부터 다시</button>
+      </div>
+
+      <div id="mismatchNote" style="display:none" class="alert"></div>
+    </div>
+  </div>
+
+<script>
+/* ===== 기본 선택자 ===== */
+const $ = sel => document.querySelector(sel);
+
+/* ===== 상태 ===== */
+const els = {
+  step1: $('#step1'), step2: $('#step2'), step3: $('#step3'),
+  src: $('#src'), tgt: $('#tgt'),
+  keepPunct: $('#keepPunct'), ignoreSpace: $('#ignoreSpace'), ignoreCase: $('#ignoreCase'),
+  unit: $('#unit'),
+  previewBtn: $('#previewBtn'), preview: $('#preview'),
+  toStep2: $('#toStep2'), back1: $('#back1'), back2: $('#back2'), redo: $('#redo'),
+  memorizeSrc: $('#memorizeSrc'), memorizeTgt: $('#memorizeTgt'),
+  quizTitle: $('#quizTitle'), leftTitle: $('#leftTitle'), rightTitle: $('#rightTitle'),
+  leftPanel: $('#leftPanel'), rightPanel: $('#rightPanel'),
+  checkBtn: $('#checkBtn'),
+  totalN: $('#totalN'), okN: $('#okN'), badN: $('#badN'),
+  mismatch: $('#mismatchNote')
+};
+
+const state = {
+  srcRaw: '', tgtRaw: '',
+  srcSents: [], tgtSents: [],
+  mode: null // 'src' or 'tgt'
+};
+
+/* ===== Safari-safe 문장 분리 (lookbehind 미사용) ===== */
+function splitSentences(text){
+  const cleaned = (text||'').replace(/\r/g,'').trim();
+  if(!cleaned) return [];
+  const endPunct = /[\.!\?…。？！]/;
+  const lines = cleaned.split(/\n+/);
+  const out = [];
+  for(const raw of lines){
+    let line = (raw||'').trim();
+    if(!line) continue;
+    let buf = '';
+    for(let i=0;i<line.length;i++){
+      const ch=line[i];
+      buf += ch;
+      if(endPunct.test(ch)){
+        const next=line[i+1]||'';
+        if(!next || /\s|["')\]}”’〉》」』]/.test(next)){
+          push(out, buf); buf='';
+        }
+      }
+    }
+    push(out, buf);
+  }
+  if(out.length===1 && out[0].length>500){
+    return out[0].split(/(?=[\.\?!。？！])/).map(s=>s.trim()).filter(Boolean);
+  }
+  return out;
+  function push(arr,s){ const t=(s||'').trim(); if(t) arr.push(t); }
+}
+
+/* ===== 정규화/비교 유틸 ===== */
+function escapeHtml(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function normalizeForCompare(s, opts){
+  let out = s || '';
+  out = out.replace(/[“”„‟”]/g,'"').replace(/[‘’‛’]/g,"'");
+  if(opts.ignoreSpace) out = out.replace(/\s+/g,' ').trim();
+  if(opts.ignoreCase) out = out.toLowerCase();
+  if(!opts.keepPunct){
+    out = out.replace(/[.,!?;:()"'\[\]{}<>《》〈〉「」『』。、？！…]/g,'');
+  }
+  return out;
+}
+
+function tokensOf(s, unit){ return unit==='char' ? [...s] : (s.length ? s.split(/\s+/) : []); }
+
+/* ===== LCS diff ===== */
+function diffTokens(aTokens, bTokens){
+  const n=aTokens.length, m=bTokens.length;
+  const dp = Array.from({length:n+1},()=>Array(m+1).fill(0));
+  for(let i=n-1;i>=0;i--){
+    for(let j=m-1;j>=0;j--){
+      dp[i][j] = aTokens[i]===bTokens[j] ? dp[i+1][j+1]+1 : Math.max(dp[i+1][j], dp[i][j+1]);
+    }
+  }
+  const ops=[]; let i=0,j=0;
+  while(i<n && j<m){
+    if(aTokens[i]===bTokens[j]){ ops.push({type:'eq', text:aTokens[i]}); i++; j++; }
+    else if(dp[i+1][j] >= dp[i][j+1]){ ops.push({type:'del', text:aTokens[i++]}); }
+    else{ ops.push({type:'ins', text:bTokens[j++]}); }
+  }
+  while(i<n) ops.push({type:'del', text:aTokens[i++]});
+  while(j<m) ops.push({type:'ins', text:bTokens[j++]});
+  return ops;
+}
+
+function htmlFromOps(ops, unit){
+  const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const joiner = unit==='char' ? '' : ' ';
+  const expected = [];
+  const actual   = [];
+  ops.forEach(op=>{
+    if(op.type==='eq'){ expected.push(esc(op.text)); actual.push(esc(op.text)); }
+    else if(op.type==='del'){ expected.push(`<span class="miss">${esc(op.text)}</span>`); }
+    else if(op.type==='ins'){ actual.push(`<span class="add">${esc(op.text)}</span>`); }
+  });
+  return {
+    expectedHTML: expected.join(joiner),
+    actualHTML: actual.join(joiner),
+    hasDiff: ops.some(o=>o.type!=='eq')
+  };
+}
+
+/* ===== UI 동작 ===== */
+function goStep(step){
+  els.step1.style.display = (step===1)?'block':'none';
+  els.step2.style.display = (step===2)?'block':'none';
+  els.step3.style.display = (step===3)?'block':'none';
+  // 스크롤 상단으로 살짝 올려 사용감 개선
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function buildPreview(){
+  const srcS = splitSentences(els.src.value);
+  const tgtS = splitSentences(els.tgt.value);
+  const warn = srcS.length!==tgtS.length
+    ? `⚠️ 문장 수가 다릅니다: 본문 ${srcS.length}개, 해석본 ${tgtS.length}개`
+    : `✅ 문장 수 일치: 총 ${srcS.length}개`;
+  els.preview.style.display='block';
+  els.preview.innerHTML = `<b>분리 결과</b><br>${warn}<br><br>
+    <span class="muted">앞 3개 미리보기</span><br>
+    <b>본문</b><br>${srcS.slice(0,3).map((s,i)=>`${i+1}. ${escapeHtml(s)}`).join('<br>')}
+    <br><b>해석본</b><br>${tgtS.slice(0,3).map((s,i)=>`${i+1}. ${escapeHtml(s)}`).join('<br>')}`;
+}
+
+els.previewBtn.addEventListener('click', buildPreview);
+
+els.toStep2.addEventListener('click', ()=>{
+  state.srcRaw = (els.src.value||'').trim();
+  state.tgtRaw = (els.tgt.value||'').trim();
+  state.srcSents = splitSentences(state.srcRaw);
+  state.tgtSents = splitSentences(state.tgtRaw);
+  if(!state.srcSents.length || !state.tgtSents.length){
+    els.preview.style.display='block';
+    els.preview.innerHTML = `❗ 본문과 해석본을 모두 입력해주세요.`;
+    return;
+  }
+  goStep(2);
+});
+
+els.back1.addEventListener('click', ()=>goStep(1));
+
+function renderQuiz(mode){
+  state.mode = mode;
+  const leftRef = (mode==='src') ? state.tgtSents : state.srcSents;
+  const toType  = (mode==='src') ? state.srcSents : state.tgtSents;
+
+  els.quizTitle.textContent = (mode==='src') ? '3단계 · 본문 암기' : '3단계 · 해석본 암기';
+  els.leftTitle.textContent = (mode==='src') ? '좌측: 본문 해석본(참고)' : '좌측: 본문(참고)';
+  els.rightTitle.textContent = (mode==='src') ? '우측: 본문을 입력하세요' : '우측: 해석본을 입력하세요';
+
+  // 좌측 참조
+  els.leftPanel.innerHTML = leftRef.map((line,i)=>
+    `<div class="ref-line"><span class="chip">${i+1}</span><div>${escapeHtml(line)}</div></div>`
+  ).join('');
+
+  // 우측 입력
+  els.rightPanel.innerHTML = '';
+  toType.forEach((_,i)=>{
+    const wrap = document.createElement('div');
+    wrap.className='line-wrap';
+    wrap.innerHTML = `
+      <div class="idx">${i+1}</div>
+      <div style="flex:1">
+        <input class="answer-line" type="text" placeholder="문장 #${i+1} 입력" data-idx="${i}" />
+        <div class="muted" id="fb-${i}" style="margin-top:6px; display:none"></div>
+      </div>`;
+    els.rightPanel.appendChild(wrap);
+  });
+
+  // 점수판 초기화
+  els.totalN.textContent = toType.length;
+  els.okN.textContent = '0';
+  els.badN.textContent = '0';
+  els.mismatch.style.display='none';
+
+  goStep(3);
+}
+
+els.memorizeSrc.addEventListener('click', ()=>renderQuiz('src'));
+els.memorizeTgt.addEventListener('click', ()=>renderQuiz('tgt'));
+els.back2.addEventListener('click', ()=>goStep(2));
+els.redo.addEventListener('click', ()=>goStep(1));
+
+els.checkBtn.addEventListener('click', ()=>{
+  const opts = {
+    keepPunct: els.keepPunct.checked,
+    ignoreSpace: els.ignoreSpace.checked,
+    ignoreCase: els.ignoreCase.checked
+  };
+  const unit = els.unit.value;
+
+  const toType  = (state.mode==='src') ? state.srcSents : state.tgtSents;
+  let ok=0, bad=0;
+
+  toType.forEach((expected,i)=>{
+    const input = document.querySelector(`.answer-line[data-idx="${i}"]`);
+    const user  = (input.value||'').trim();
+
+    const expN = normalizeForCompare(expected, opts);
+    const usrN = normalizeForCompare(user, opts);
+
+    const fb = document.getElementById(`fb-${i}`);
+    fb.style.display = 'block';
+
+    if(expN === usrN){
+      input.style.borderColor = '#bfe9cf';
+      input.style.background = 'var(--ok-tint)';
+      fb.innerHTML = `✅ 정답`;
+      ok++;
+    }else{
+      input.style.borderColor = '#ffd1d1';
+      input.style.background = 'var(--bad-tint)';
+      const aTokens = tokensOf(expN, unit);
+      const bTokens = tokensOf(usrN, unit);
+      const ops = diffTokens(aTokens, bTokens);
+      const {expectedHTML, actualHTML} = htmlFromOps(ops, unit);
+      fb.innerHTML = `
+        ❌ 오답<br>
+        <span class="muted">정답</span>: <span>${expectedHTML||'(빈 값)'}</span><br>
+        <span class="muted">입력</span>: <span class="diff">${actualHTML||'(빈 값)'}</span>
+      `;
+      bad++;
+    }
+  });
+
+  els.okN.textContent = String(ok);
+  els.badN.textContent = String(bad);
+
+  if(state.srcSents.length !== state.tgtSents.length){
+    els.mismatch.style.display='block';
+    els.mismatch.textContent = '주의: 처음 입력 시 문장 수가 서로 다르면 1:1 매칭이 어긋날 수 있어요. 구두점/줄바꿈을 정리해 주세요.';
+  }
+});
+</script>
+</body>
+</html>
